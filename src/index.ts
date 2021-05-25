@@ -121,7 +121,7 @@ app.post("/login", (req, res) => {
         if(err) res.send('Invalid username or password!')
         if(!user) res.send('User is not yet registered!')
     })
-    console.log(req)
+}, (req, res) => {
     res.send("Success login!")
 });
 
