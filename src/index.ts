@@ -119,4 +119,4 @@ app.get('/auth/logout', (req, res) => {
     }
 })
 
-app.listen(config.PORT, () => { console.log('Server is up!') })
+app.listen(config.PORT || 4000, () => { console.log('Server is up!') })
