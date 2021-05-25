@@ -120,7 +120,7 @@ passport.use(new TwitterStrategy({
 app.post("/login", passport.authenticate("local", {
     failureFlash: true
 }, (req, res) => {
-    res.send(req)
+    res.send("Success login!")
 }))
 
 app.post('/register', async (req, res) => {
