@@ -120,9 +120,8 @@ app.post("/login", (req, res) => {
     passport.authenticate("local", (err: any, user: any) => {
         if(err) res.send('Invalid username or password!')
         if(!user) res.send('User is not yet registered!')
+        if (user) res.send('Success login!')
     })
-}, (req, res) => {
-    res.send("Success login!")
 });
 
 app.post('/register', async (req, res) => {
