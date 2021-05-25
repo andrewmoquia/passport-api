@@ -119,7 +119,7 @@ passport.use(new TwitterStrategy({
 //Routes
 app.post('/login', function (req, res, next) {
     passport.authenticate('local', function (err, user, info) {
-        if (err) res.send(info)
+        if (info) res.send(info)
     })(req, res, next)
 });
 
