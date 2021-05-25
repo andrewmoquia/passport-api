@@ -23,7 +23,6 @@ app.use(
     session({
         secret: 'secretcode',
         resave: true,
-        proxy: true,
         saveUninitialized: false,
         cookie: {
             sameSite: 'none',
