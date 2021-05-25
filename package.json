@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon build/dist/index.js",
+    "heroku-prebuild": "yarn install",
     "build": "tsc -p .",
     "dev": "nodemon --exec ts-node src/index.ts"
   },
@@ -23,7 +24,8 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "passport-twitter": "^1.0.4",
-    "passport-twitter-oauth2": "^2.1.1"
+    "passport-twitter-oauth2": "^2.1.1",
+    "tsc": "^2.0.3"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
