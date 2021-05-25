@@ -117,9 +117,9 @@ passport.use(new TwitterStrategy({
 
 //Routes
 app.post("/login", (req, res) => {
-    passport.authenticate("local", (err, user) => {
-        if(err) return res.send('Invalid username or password!')
-        if(!user) return res.send('User is not yet registered!')
+    passport.authenticate("local", (err: any, user: any) => {
+        if(err) res.send('Invalid username or password!')
+        if(!user) res.send('User is not yet registered!')
     })
     console.log(req)
     res.send("Success login!")
