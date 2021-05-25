@@ -57,11 +57,11 @@ passport.deserializeUser((id: string, done: any) => {
 passport.use(new LocalStrategy((username: string, password: string, done) => {
     User.findOne({ username: username }, (err: Error, user: IMongoUser) => {
         if (err) throw err
-        if (!user) return done(null, false, {message: "No user with that username!"})
+        if (!user) return done(null, false, { message: "No user with that username!" })
         bcrypt.compare(password, user.password, (err, result: boolean) => {
             if (err) throw err
             if (result === true) { return done(null, user) }
-            else { return done(null, false, { message: "Incorrect password!"}) }
+            else { return done(null, false, { message: "Incorrect password!" }) }
         });
     });
 })
@@ -116,10 +116,7 @@ passport.use(new TwitterStrategy({
 ))
 
 //Routes
-app.post("/login", passport.authenticate("local", {
-    failureMessage: true,
-    failureFlash: true
-}), (req, res) => {
+app.post("/login", passport.authenticate("local"), (req, res) => {
     res.send('Success login!')
 })
 
