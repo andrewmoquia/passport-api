@@ -16,12 +16,20 @@ const app = express()
 //Middleware
 app.use(express.json())
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
+
+app.set("trust proxy", 1)
+
 app.use(
     session({
         secret: 'secretcode',
         resave: true,
         proxy: true,
-        saveUninitialized: false
+        saveUninitialized: false,
+        cookie: {
+            sameSite: 'none',
+            secure: true,
+            maxAge: 1000 * 60 * 60 * 24 * 7 //One week
+        }
     })
 )
 app.use(passport.initialize())
