@@ -10,6 +10,7 @@ import { config } from './config'
 import './database'
 import User from './user'
 import { IMongoUser } from './types'
+import flash from 'connect-flash'
 
 const TwitterStrategy = passportTwitter.Strategy
 const GoogleStrategy = passportGoogle.Strategy
@@ -21,7 +22,7 @@ app.use(express.json())
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
 app.set("trust proxy", 1)
-
+app.use(flash())
 app.use(
     session({
         secret: 'secretcode',
@@ -116,13 +117,12 @@ passport.use(new TwitterStrategy({
 ))
 
 //Routes
-app.post("/login", (req, res) => {
-    passport.authenticate("local", (err, user, info) => {
-        if(err) res.send(err)
-        if (user) res.send("Success login!")
-        if(!user) res.send("No User")
-    })
-})
+app.post('/login', function (req, res, next) {
+    passport.authenticate('local', function (err, user, info) {
+        res.send(info);
+    })(req, res, next);
+});
+
 
 app.post('/register', async (req, res) => {
     const { username, password } = req?.body;
