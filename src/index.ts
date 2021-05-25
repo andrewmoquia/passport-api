@@ -22,7 +22,6 @@ app.use(express.json())
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
 app.set("trust proxy", 1)
-
 app.use(flash())
 app.use(
     session({
@@ -30,7 +29,7 @@ app.use(
         resave: true,
         saveUninitialized: false,
         cookie: {
-            sameSite: "none",
+            sameSite: 'none',
             secure: true,
             maxAge: 1000 * 60 * 60 * 24 * 7 //One week
         }
@@ -119,9 +118,9 @@ passport.use(new TwitterStrategy({
 
 //Routes
 app.post("/login", passport.authenticate("local", {
-    successRedirect: "http://localhost:3000",
-    failureRedirect: "http://localhost:3000/login",
     failureFlash: true
+}, (req, res) => {
+    res.send(req)
 }))
 
 app.post('/register', async (req, res) => {
