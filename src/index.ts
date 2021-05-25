@@ -10,6 +10,7 @@ import { config } from './config'
 import './database'
 import User from './user'
 import { IMongoUser } from './types'
+import { info } from 'console'
 
 const TwitterStrategy = passportTwitter.Strategy
 const GoogleStrategy = passportGoogle.Strategy
@@ -116,7 +117,11 @@ passport.use(new TwitterStrategy({
 ))
 
 //Routes
-app.post("/login", passport.authenticate("local"), (req, res) => {
+app.post("/login", (req, res) => {
+    passport.authenticate("local", (err, user, info) => {
+        if(err) return res.send('Invalid username or password!')
+        if(!user) return res.send('User is not yet registered!')
+    })
     console.log(req)
     res.send("Success login!")
 });
