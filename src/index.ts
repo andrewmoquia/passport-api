@@ -117,6 +117,7 @@ passport.use(new TwitterStrategy({
 
 //Routes
 app.post("/login", passport.authenticate("local"), (req, res) => {
+    console.log(req)
     res.send("Success login!")
 });
 
