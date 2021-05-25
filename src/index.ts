@@ -119,9 +119,9 @@ passport.use(new TwitterStrategy({
 //Routes
 app.post('/login', function (req, res, next) {
     passport.authenticate('local', function (err, user, info) {
-        if (err) next(err)
-        if (info) res.send(info)
-        if (!user) res.send("Something went wrong!")
+        if (err) return next(err)
+        if (info) return res.send(info)
+        if (!user) return res.send("Something went wrong!")
         req.logIn(user, (err) => {
             if(err) return next(err)
             return res.send("Success login!")
