@@ -116,7 +116,9 @@ passport.use(new TwitterStrategy({
 ))
 
 //Routes
-app.post("/login", passport.authenticate("local"), (req, res) => {
+app.post("/login", passport.authenticate("local", {
+    failureFlash: "Invalid username of password!"
+}), (req, res) => {
     res.send('Success login!')
 })
 
