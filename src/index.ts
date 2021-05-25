@@ -23,9 +23,9 @@ app.use(
     session({
         secret: 'secretcode',
         resave: true,
-        saveUninitialized: false,
+        saveUninitialized: true,
         cookie: {
-            sameSite: 'none',
+            sameSite: "none",
             secure: true,
             maxAge: 1000 * 60 * 60 * 24 * 7 //One week
         }
