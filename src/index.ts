@@ -4,6 +4,8 @@ import session from 'express-session'
 import passport from 'passport'
 import passportGoogle from 'passport-google-oauth20'
 import passportTwitter from 'passport-twitter'
+import passportLocal from 'passport-local'
+import bcrypt from 'bcryptjs'
 import { config } from './config'
 import './database'
 import User from './user'
@@ -11,6 +13,7 @@ import { IMongoUser } from './types'
 
 const TwitterStrategy = passportTwitter.Strategy
 const GoogleStrategy = passportGoogle.Strategy
+const LocalStrategy = passportLocal.Strategy
 const app = express()
 
 //Middleware
@@ -23,7 +26,7 @@ app.use(
     session({
         secret: 'secretcode',
         resave: true,
-        saveUninitialized: true,
+        saveUninitialized: false,
         cookie: {
             sameSite: "none",
             secure: true,
@@ -41,10 +44,28 @@ passport.serializeUser((user: IMongoUser, done: any) => {
 
 //Take user data and attaching it to req.user
 passport.deserializeUser((id: string, done: any) => {
-    User.findById(id, (err: Error, doc: IMongoUser) => {
-        return done(null, doc)
+    User.findById(id, (err: Error, user: IMongoUser) => {
+        const userData = {
+            username: user.username,
+            id: user._id
+        }
+        return done(null, userData)
     })
 })
+
+//Local Passport
+passport.use(new LocalStrategy((username: string, password: string, done) => {
+    User.findOne({ username: username }, (err: Error, user: IMongoUser) => {
+        if (err) throw err
+        if (!user) return done(null, false)
+        bcrypt.compare(password, user.password, (err, result: boolean) => {
+            if (err) throw err
+            if (result === true) { return done(null, user) }
+            else { return done(null, false) }
+        });
+    });
+})
+);
 
 //Google Passport
 passport.use(new GoogleStrategy({
@@ -66,7 +87,7 @@ passport.use(new GoogleStrategy({
                 }
                 cb(null, doc)
             })
-        } catch (error) {console.log(error)}
+        } catch (error) { console.log(error) }
     }
 ))
 
@@ -95,6 +116,27 @@ passport.use(new TwitterStrategy({
 ))
 
 //Routes
+app.post('/register', async (req, res) => {
+    const { username, password } = req?.body;
+    if (!username || !password || typeof username !== "string" || typeof password !== "string") {
+        res.send("Improper Values");
+        return;
+    }
+    User.findOne({ username }, async (err: Error, doc: IMongoUser) => {
+        if (err) throw err;
+        if (doc) res.send("User already exists!");
+        if (!doc) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const newUser = new User({
+                username,
+                password: hashedPassword,
+            });
+            await newUser.save();
+            res.send("Success account creation!")
+        }
+    })
+});
+
 app.get('/auth/google',
     passport.authenticate('google', { scope: ['profile'] })
 );
@@ -120,7 +162,7 @@ app.get('/', (req, res) => { res.send("Hello World!") })
 app.get('/getUser', (req, res) => { res.send(req.user) })
 
 app.get('/auth/logout', (req, res) => {
-    if(req.user) {
+    if (req.user) {
         req.logout()
         res.send("Successfully logout!")
     }

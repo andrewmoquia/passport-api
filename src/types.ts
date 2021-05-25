@@ -9,5 +9,6 @@ export interface IMongoUser {
     googleId?: string,
     twitterId?: string,
     username: string,
+    password: string,
     _v: number
 }
