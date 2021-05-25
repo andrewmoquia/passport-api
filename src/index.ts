@@ -10,7 +10,6 @@ import { config } from './config'
 import './database'
 import User from './user'
 import { IMongoUser } from './types'
-import { info } from 'console'
 
 const TwitterStrategy = passportTwitter.Strategy
 const GoogleStrategy = passportGoogle.Strategy
