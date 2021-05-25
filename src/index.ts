@@ -117,11 +117,9 @@ passport.use(new TwitterStrategy({
 ))
 
 //Routes
-app.post("/login", passport.authenticate("local", {
-    failureFlash: true
-}, (req, res) => {
+app.post("/login", passport.authenticate("local"), (req, res) => {
     res.send("Success login!")
-}))
+})
 
 app.post('/register', async (req, res) => {
     const { username, password } = req?.body;
