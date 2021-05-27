@@ -175,7 +175,7 @@ app.get('/auth/twitter/callback',
     })
 
 app.get('/getUser', verify, async (req, res) => {
-    const userFound = await User.findById({ _id: req?.user?._id })
+    const userFound = await User.findById({ _id: req!.user!._id })
     if (!userFound) res.status(301).send('Something went wrong!')
     res.send(userFound)
 })
