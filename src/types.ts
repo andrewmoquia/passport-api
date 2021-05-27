@@ -13,3 +13,8 @@ export interface IMongoUser {
     password: string,
     _v: number
 }
+
+export interface verifiedUser {
+    _id: string,
+    iat: string
+}

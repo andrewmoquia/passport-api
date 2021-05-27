@@ -9,7 +9,7 @@ import bcrypt from 'bcryptjs'
 import { config } from './config'
 import './database'
 import User from './user'
-import { IMongoUser } from './types'
+import { IMongoUser, verifiedUser } from './types'
 import morgan from 'morgan'
 import jwt from 'jsonwebtoken'
 import verify from './verifyToken'
@@ -175,7 +175,9 @@ app.get('/auth/twitter/callback',
     })
 
 app.get('/getUser', verify, async (req, res) => {
-    const userFound = await User.findById({ _id: req!.user!._id })
+    const user = req.user
+    const userId = user as verifiedUser
+    const userFound = await User.findById({ _id: userId._id })
     if (!userFound) res.status(301).send('Something went wrong!')
     res.send(userFound)
 })
