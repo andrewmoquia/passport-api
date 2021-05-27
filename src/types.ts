@@ -1,4 +1,5 @@
 export interface IUser {
+    _id: string,
     googleId?: string,
     twitterId?: string,
     username: string

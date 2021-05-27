@@ -10,7 +10,9 @@ import { config } from './config'
 import './database'
 import User from './user'
 import { IMongoUser } from './types'
-import flash from 'connect-flash'
+import morgan from 'morgan'
+import jwt from 'jsonwebtoken'
+import verify from './verifyToken'
 
 const TwitterStrategy = passportTwitter.Strategy
 const GoogleStrategy = passportGoogle.Strategy
@@ -18,11 +20,11 @@ const LocalStrategy = passportLocal.Strategy
 const app = express()
 
 //Middleware
+app.use(morgan('dev'))
 app.use(express.json())
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
 app.set("trust proxy", 1)
-app.use(flash())
 app.use(
     session({
         secret: 'secretcode',
@@ -123,12 +125,13 @@ app.post('/login', function (req, res, next) {
         if (info) return res.send(info)
         if (!user) return res.send("Something went wrong!")
         req.logIn(user, (err) => {
-            if(err) return next(err)
-            return res.send("Success login!")
+            if (err) return next(err)
+            //Create and assign token
+            const token = jwt.sign({ _id: user._id }, `${config.TOKEN_SECRET}`)
+            res.header('auth-token', token).send(token)
         })
     })(req, res, next)
-});
-
+})
 
 app.post('/register', async (req, res) => {
     const { username, password } = req?.body;
@@ -171,9 +174,11 @@ app.get('/auth/twitter/callback',
         res.redirect('http://localhost:3000');
     })
 
-app.get('/', (req, res) => { res.send("Hello World!") })
-
-app.get('/getUser', (req, res) => { res.send(req.user) })
+app.get('/getUser', verify, async (req, res) => {
+    const findUser = await User.findById({ _id: req?.user?._id })
+    if (!findUser) res.status(301).send('Something went wrong!')
+    res.send(findUser)
+})
 
 app.get('/auth/logout', (req, res) => {
     if (req.user) {

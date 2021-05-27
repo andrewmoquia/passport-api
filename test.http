@@ -1,0 +1,17 @@
+@api = http://localhost:4000
+
+POST {{api}}/login
+Content-Type: application/json
+
+{
+    "username": "1",
+    "password": "1"
+}
+
+###
+GET {{api}}/getUser
+auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGFkMjc4ZWNkNGRiZjAwMTU2Y2JkYzYiLCJpYXQiOjE2MjIwOTk2OTZ9.oLZBDDleWCn_wPHHrXxn8wP3caAwBN3wNqIifs3i_l4
+
+###
+GET {{api}}/getUser
+auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGFkMTcxZTdiNjRiZDAwMTVkZDQ0MDciLCJpYXQiOjE2MjIwOTgwNTF9.9ucJLMoNQaNiJkeHfxXXzB5x9ugoICwe3hIs34gkJwI
