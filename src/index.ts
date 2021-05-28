@@ -169,7 +169,7 @@ app.get('/auth/google/callback',
 app.get('/auth/twitter', passport.authenticate('twitter'))
 
 app.get('/getUser/socmedway', (req, res) => {
-    res.send(req.cookies)
+    res.send(req.session)
 })
 
 app.get('/auth/twitter/callback',
