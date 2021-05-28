@@ -169,11 +169,7 @@ app.get('/auth/google/callback',
 app.get('/auth/twitter', passport.authenticate('twitter'))
 
 app.get('/getUser/socmedway', (req, res) => {
-    if (req.isAuthenticated()) {
-        res.send(req.user)
-    } else {
-        res.send('Something went wrong, please log in again!')
-    }
+    res.send(req.cookies)
 })
 
 app.get('/auth/twitter/callback',
