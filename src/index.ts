@@ -159,7 +159,7 @@ app.get('/auth/google',
 );
 
 app.get('/auth/google/callback', (req, res, next) => {
-    passport.authenticate('local', function (err, user, info) {
+    passport.authenticate('google', function (err, user, info) {
         if (err) return next(err)
         if (info) return res.send(info)
         if (!user) return res.send("Something went wrong!")
