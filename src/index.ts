@@ -169,8 +169,10 @@ app.get('/auth/google/callback',
 app.get('/auth/twitter', passport.authenticate('twitter'))
 
 app.get('/getUser/socmedway', (req, res) => {
-    if (req.session.authenticated) {
+    if (req.isAuthenticated()) {
         res.send(req.user)
+    } else {
+        res.send('Something went wrong, please log in again!')
     }
 })
 
