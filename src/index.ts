@@ -168,6 +168,10 @@ app.get('/auth/google/callback',
 
 app.get('/auth/twitter', passport.authenticate('twitter'))
 
+qpp.get('/getUser/socmedway', (req, res) => {
+    res.send(req.user)
+})
+
 app.get('/auth/twitter/callback',
     passport.authenticate('twitter', { failureRedirect: 'http://localhost:3000/login' }),
     function (req, res) {
