@@ -158,27 +158,13 @@ app.get('/auth/google',
     passport.authenticate('google', { scope: ['profile'] })
 );
 
-app.get('/auth/google/callback', (req, res, next) => {
-    passport.authenticate('google', function (err, user, info) {
-        if (err) return next(err)
-        if (info) return res.send(info)
-        if (!user) return res.send("Something went wrong!")
-        req.logIn(user, (err) => {
-            if (err) return next(err)
-            //Create and assign token
-            const token = jwt.sign({ _id: user._id }, `${config.TOKEN_SECRET}`)
-            res.header('auth-token', token).send(token).redirect('http://localhost:3000')
-        })
-    })(req, res, next)
-})
-
-// app.get('/auth/google/callback',
-//     passport.authenticate('google', { failureRedirect: 'http://localhost:3000/login' }),
-//     function (req, res) {
-//         // Successful authentication, redirect home.
-//         res.redirect('http://localhost:3000');
-//     }
-// )
+app.get('/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: 'http://localhost:3000/login' }),
+    function (req, res) {
+        // Successful authentication, redirect home.
+        res.redirect('http://localhost:3000');
+    }
+)
 
 app.get('/auth/twitter', passport.authenticate('twitter'))
 
