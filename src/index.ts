@@ -8,7 +8,7 @@ import './database'
 
 // import User from './user'
 // import { IMongoUser } from './index.interfaces'
-import { serialize, deserialize} from './passport/passport'
+import { serialize, deserialize, createSession} from './passport/passport.controller'
 
 import morgan from 'morgan'
 import verify from './verifyToken'
@@ -25,18 +25,7 @@ app.use(express.json())
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
 app.set("trust proxy", 1)
-app.use(
-    session({
-        secret: 'secretcode',
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-            sameSite: 'none',
-            secure: true,
-            maxAge: 1000 * 60 * 60 * 24 * 7 //One week
-        }
-    })
-)
+app.use(createSession)
 
 app.use(passport.initialize())
 app.use(passport.session())
