@@ -158,7 +158,7 @@ app.post('/register', async (req, res) => {
 });
 
 app.get('/auth/google',
-    passport.authenticate('google', { scope: ['profile'] })
+    passport.authenticate('google', { scope: ['profile'], session: false })
 );
 
 app.get('/auth/google/callback',
@@ -167,12 +167,12 @@ app.get('/auth/google/callback',
         const user = req.user
         const userId = user as verifiedUser
         // Successful authentication, redirect home.
-        const token = jwt.sign({SESSION: userId._id}, `${config.TOKEN_SECRET}`)
+        const token = jwt.sign({ SESSION: userId._id }, `${config.TOKEN_SECRET}`)
         res.redirect(`http://localhost:3000/google/session/${token}`)
     }
 )
 
-app.get('/auth/twitter', passport.authenticate('twitter'))
+app.get('/auth/twitter', passport.authenticate('twitter', { session: false }))
 
 // app.get('/getUser/socmedway', (req, res) => {
 //     res.send(req.user)
@@ -185,8 +185,7 @@ app.get('/auth/twitter/callback',
         const userId = user as verifiedUser
         // Successful authentication, redirect home.
         const token = jwt.sign({ SESSION: userId._id }, `${config.TOKEN_SECRET}`)
-        res.redirect('http://localhost:3000')
-        res.header('auth_token', token).send(token)
+        res.redirect('http://localhost:3000/twitter/session/${token}')
     }
 )
 
