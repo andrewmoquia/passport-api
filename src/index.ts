@@ -20,7 +20,13 @@ const app = express()
 //Site that allow to verb action in API
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
-const redisClient = redis.createClient()
+const redisClient = redis.createClient({
+    port: 4000,
+    host : 'http://localhost:3000'
+})
+redisClient.on('connect', ()=>{
+    console.log('connected')
+})
 const limiter = require('express-limiter')(app, redisClient)
 
 //Limit requests to 100 per hour per ip address
