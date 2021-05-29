@@ -1,4 +1,5 @@
 import User from '../user'
+import session from 'express-session'
 import { IMongoUser} from '../index.interfaces'
 
 export const serialize = (user: IMongoUser, done: any) => {
