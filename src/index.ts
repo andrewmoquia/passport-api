@@ -143,11 +143,12 @@ app.post('/login', function (req, res, next) {
         if (err) return next(err)
         if (info) return res.send(info)
         if (!user) return res.send("Something went wrong!")
-        req.logIn(user, (err) => {
+        req.logIn(user, { session: false }, async (err) => {
             if (err) return next(err)
             //Create and assign token
             const token = jwt.sign({ _id: user._id }, `${config.TOKEN_SECRET}`)
-            res.header('auth-token', token).send(token)
+            // res.header('auth-token', token).send(token)
+            res.send(token)
         })
     })(req, res, next)
 })
