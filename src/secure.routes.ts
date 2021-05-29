@@ -7,8 +7,9 @@ import { IUserSession } from './types'
 const getProfile: RequestHandler = async (req, res, next) => {
     try {
         const user = req.user as IUserSession
-        console.log(user.SESSION)
-        res.send(req.user)
+        const userFound = await User.findById({_id: user.SESSION})
+        if (!userFound) res.status(301).send('Something went wrong!')
+        res.send(userFound)
     } catch (error) {
         console.log(error)
     }
