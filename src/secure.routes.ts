@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 import { RequestHandler } from 'express'
 import User from './user'
-import { IUserSession } from './types'
+import { IUserSession } from './index.interfaces'
 
 const getProfile: RequestHandler = async (req, res, next) => {
     try {
