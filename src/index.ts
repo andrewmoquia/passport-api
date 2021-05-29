@@ -167,7 +167,7 @@ app.get('/auth/google/callback',
         const userId = user as verifiedUser
         // Successful authentication, redirect home.
         const token = jwt.sign({ SESSION: userId._id }, `${config.TOKEN_SECRET}`)
-        res.redirect(`http://localhost:3000/google/session/${token}`)
+        res.redirect(`http://localhost:3000/socmed/session/${token}`)
     }
 )
 
@@ -184,7 +184,7 @@ app.get('/auth/twitter/callback',
         const userId = user as verifiedUser
         // Successful authentication, redirect home.
         const token = jwt.sign({ SESSION: userId._id }, `${config.TOKEN_SECRET}`)
-        res.redirect(`http://localhost:3000/twitter/session/${token}`)
+        res.redirect(`http://localhost:3000/socmed/session/${token}`)
     }
 )
 
