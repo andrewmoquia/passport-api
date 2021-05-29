@@ -17,16 +17,13 @@ import localRoutes from './passport/strategy/local/local.strategy'
 
 const app = express()
 
+//ALlow test in localhost:4000
+app.set("trust proxy", 1)
+
 //Site that allow to verb action in API
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
-const redisClient = redis.createClient({
-    port: 4000,
-    host: 'localhost'
-})
-redisClient.on('connect', ()=>{
-    console.log('connected')
-})
+const redisClient = redis.createClient()
 const limiter = require('express-limiter')(app, redisClient)
 
 //Limit requests to 100 per hour per ip address
@@ -42,9 +39,6 @@ app.use(helmet())
 //Console verb action in HTTP
 app.use(morgan('dev'))
 app.use(express.json())
-
-//ALlow test in localhost:4000
-app.set("trust proxy", 1)
 
 //Create cookie when interacting with API
 app.use(createSession)
