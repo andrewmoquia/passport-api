@@ -16,12 +16,14 @@ import twitterRoutes from './passport/strategy/twitter/twitter.strategy'
 import localRoutes from './passport/strategy/local/local.strategy'
 
 const app = express()
+
+//Add limit to all request base on this condition
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100 // limit each IP to 100 requests per windowMs
+    max: 200 // limit each IP to 200 requests per windowMs
 });
 
-//ALlow test in localhost:4000
+//ALlow test in localhost:3000
 app.set("trust proxy", 1)
 
 //Site that allow to make request in API
@@ -30,9 +32,10 @@ app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 //Add 11 layer of security
 app.use(helmet())
 
+//Apply the limiter
 app.use(limiter)
 
-//Console verb action in HTTP
+//Console request action in HTTP
 app.use(morgan('dev'))
 app.use(express.json())
 
