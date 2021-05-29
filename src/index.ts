@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-// import session from 'express-session'
+import session from 'express-session'
 import passport from 'passport'
 import passportGoogle from 'passport-google-oauth20'
 import passportTwitter from 'passport-twitter'
@@ -26,37 +26,37 @@ app.use(express.json())
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
 app.set("trust proxy", 1)
-// app.use(
-//     session({
-//         secret: 'secretcode',
-//         resave: true,
-//         saveUninitialized: false,
-//         cookie: {
-//             sameSite: 'none',
-//             secure: true,
-//             maxAge: 1000 * 60 * 60 * 24 * 7 //One week
-//         }
-//     })
-// )
+app.use(
+    session({
+        secret: 'secretcode',
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            sameSite: 'none',
+            secure: true,
+            maxAge: 1000 * 60 * 60 * 24 * 7 //One week
+        }
+    })
+)
 
 app.use(passport.initialize())
 app.use(passport.session())
 
 //Taking user data from authentication and store it in session cookie
-// passport.serializeUser((user: IMongoUser, done: any) => {
-//     return done(null, user._id)
-// })   
+passport.serializeUser((user: IMongoUser, done: any) => {
+    return done(null, user._id)
+})   
 
-// //Take user data and attaching it to req.user
-// passport.deserializeUser((id: string, done: any) => {
-//     User.findById(id, (err: Error, user: IMongoUser) => {
-//         const userData = {
-//             username: user.username,
-//             id: user._id
-//         }
-//         return done(null, userData)
-//     })
-// })
+//Take user data and attaching it to req.user
+passport.deserializeUser((id: string, done: any) => {
+    User.findById(id, (err: Error, user: IMongoUser) => {
+        const userData = {
+            username: user.username,
+            id: user._id
+        }
+        return done(null, userData)
+    })
+})
 
 //Local Passport
 passport.use(new LocalStrategy((username: string, password: string, done) => {
@@ -157,11 +157,11 @@ app.post('/register', async (req, res) => {
 });
 
 app.get('/auth/google',
-    passport.authenticate('google', { scope: ['profile'], session: false })
+    passport.authenticate('google', { scope: ['profile'], session: true })
 );
 
 app.get('/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: 'http://localhost:3000/login', session: false }),
+    passport.authenticate('google', { failureRedirect: 'http://localhost:3000/login', session: true }),
     function (req, res) {
         const user = req.user
         const userId = user as verifiedUser
@@ -171,14 +171,14 @@ app.get('/auth/google/callback',
     }
 )
 
-app.get('/auth/twitter', passport.authenticate('twitter', { session: false }))
+app.get('/auth/twitter', passport.authenticate('twitter', { session: true }))
 
 // app.get('/getUser/socmedway', (req, res) => {
 //     res.send(req.user)
 // })
 
 app.get('/auth/twitter/callback',
-    passport.authenticate('twitter', { failureRedirect: 'http://localhost:3000/login', session: false }),
+    passport.authenticate('twitter', { failureRedirect: 'http://localhost:3000/login', session: true }),
     function (req, res) {
         const user = req.user
         const userId = user as verifiedUser
