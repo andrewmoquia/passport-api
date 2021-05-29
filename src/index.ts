@@ -167,7 +167,7 @@ app.get('/auth/google/callback',
         const user = req.user
         const userId = user as verifiedUser
         // Successful authentication, redirect home.
-        const token = jwt.sign(userId._id, `${config.TOKEN_SECRET}`)
+        const token = jwt.sign({SESSION: userId._id}, `${config.TOKEN_SECRET}`)
         res.redirect(`http://localhost:3000/google/session/${token}`)
     }
 )
