@@ -40,8 +40,7 @@ app.set("trust proxy", 1)
 // )
 
 app.use(passport.initialize())
-
-// app.use(passport.session())
+app.use(passport.session())
 
 //Taking user data from authentication and store it in session cookie
 // passport.serializeUser((user: IMongoUser, done: any) => {
