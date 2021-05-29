@@ -49,7 +49,7 @@ passport.use(new JWTStrategy ({
     jwtFromRequest: ExtractJWT.fromUrlQueryParameter('auth_token')
 }, async(token, done) => {
         try {
-            return done(null, token._id);
+            return done(null, token.user);
         } catch (error) {
             done(error);
         }
@@ -145,9 +145,8 @@ app.post('/login', function (req, res, next) {
         req.logIn(user, { session: false }, async (err) => {
             if (err) return next(err)
             //Create and assign token
-            const token = jwt.sign({ _id: user._id }, `${config.TOKEN_SECRET}`)
-            // res.header('auth-token', token).send(token)
-            res.send(token)
+            const token = jwt.sign({ user: user._id }, `${config.TOKEN_SECRET}`)
+            res.header('auth-token', token).send(token)
         })
     })(req, res, next)
 })
