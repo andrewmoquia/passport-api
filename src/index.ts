@@ -22,7 +22,7 @@ app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
 const redisClient = redis.createClient({
     port: 4000,
-    host : 'http://localhost:3000'
+    host: 'http://localhost:3000'
 })
 redisClient.on('connect', ()=>{
     console.log('connected')
