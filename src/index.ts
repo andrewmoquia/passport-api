@@ -13,11 +13,8 @@ import { IMongoUser, verifiedUser } from './types'
 import morgan from 'morgan'
 import jwt from 'jsonwebtoken'
 import verify from './verifyToken'
-import JWTPassport from 'passport-jwt'
 import secureRoute from './secure.routes'
 
-const ExtractJWT = JWTPassport.ExtractJwt
-const JWTStrategy = JWTPassport.Strategy    
 const TwitterStrategy = passportTwitter.Strategy
 const GoogleStrategy = passportGoogle.Strategy
 const LocalStrategy = passportLocal.Strategy
@@ -43,18 +40,6 @@ app.set("trust proxy", 1)
 // )
 
 app.use(passport.initialize())
-
-passport.use(new JWTStrategy ({
-    secretOrKey: `${config.TOKEN_SECRET}`,
-    jwtFromRequest: ExtractJWT.fromUrlQueryParameter('auth_token')
-}, async(token, done) => {
-        try {
-            return done(null, token.user);
-        } catch (error) {
-            done(error);
-        }
-    }
-))
 
 // app.use(passport.session())
 
@@ -145,7 +130,7 @@ app.post('/login', function (req, res, next) {
         req.logIn(user, { session: false }, async (err) => {
             if (err) return next(err)
             //Create and assign token
-            const token = jwt.sign({ user: user._id }, `${config.TOKEN_SECRET}`)
+            const token = jwt.sign({ SESSION: user._id }, `${config.TOKEN_SECRET}`)
             res.header('auth_token', token).send(token)
         })
     })(req, res, next)
@@ -191,10 +176,14 @@ app.get('/auth/twitter', passport.authenticate('twitter'))
 // })
 
 app.get('/auth/twitter/callback',
-    passport.authenticate('twitter', { failureRedirect: 'http://localhost:3000/login' }),
+    passport.authenticate('twitter', { failureRedirect: 'http://localhost:3000/login', session: false }),
     function (req, res) {
+        const user = req.user
+        const userId = user as verifiedUser
         // Successful authentication, redirect home.
-        res.redirect('http://localhost:3000');
+        const token = jwt.sign({ SESSION: userId._id }, `${config.TOKEN_SECRET}`)
+        res.header('auth_token', token).send(token).redirect('http://localhost:3000')
+        // res.redirect('http://localhost:3000');
     }
 )
 
@@ -213,6 +202,6 @@ app.get('/auth/logout', (req, res) => {
     }
 })
 
-app.use('/user', passport.authenticate('jwt', { session: false }), secureRoute)
+app.use('/user', verify, secureRoute)
 
 app.listen(config.PORT || 4000, () => { console.log('Server is up!') })

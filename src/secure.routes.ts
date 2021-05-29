@@ -3,11 +3,7 @@ const router = express.Router();
 import {RequestHandler} from 'express'
 
 const getProfile: RequestHandler = (req, res, next) => {
-    res.send({
-        message: 'You made it to the secure route',
-        user: req.user,
-        token: req.query.secret_token
-    })
+    res.send(req.user)
 }
 
 router.get('/profile', getProfile);

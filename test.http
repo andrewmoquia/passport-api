@@ -4,13 +4,13 @@ POST {{api}}/login
 Content-Type: application/json
 
 {
-    "username": "1",
-    "password": "1"
+    "username": "123",
+    "password": "123"
 }
 
 ###
-GET {{api}}/getUser
-auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGFkMjc4ZWNkNGRiZjAwMTU2Y2JkYzYiLCJpYXQiOjE2MjIwOTk2OTZ9.oLZBDDleWCn_wPHHrXxn8wP3caAwBN3wNqIifs3i_l4
+GET {{api}}/user/profile
+auth_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGFkMjc4ZWNkNGRiZjAwMTU2Y2JkYzYiLCJpYXQiOjE2MjIwOTk2OTZ9.oLZBDDleWCn_wPHHrXxn8wP3caAwBN3wNqIifs3i_l4
 
 ###
 GET {{api}}/getUser
