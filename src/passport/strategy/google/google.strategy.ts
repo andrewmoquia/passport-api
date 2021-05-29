@@ -1,12 +1,14 @@
 import User from '../../../user'
+import jwt from 'jsonwebtoken'
 import passport from 'passport'
 import passportGoogle from 'passport-google-oauth20'
 
 import { config } from '../../../config'
-import {IMongoUser} from '../../../index.interfaces'
+import { Router } from 'express'
+import { IMongoUser, verifiedUser } from '../../../index.interfaces'
 
 const GoogleStrategy = passportGoogle.Strategy
-
+const router = Router()
 
 //Google Passport
 passport.use(new GoogleStrategy({
@@ -31,3 +33,20 @@ passport.use(new GoogleStrategy({
         } catch (error) { console.log(error) }
     }
 ))
+
+router.get('/auth/google',
+    passport.authenticate('google', { scope: ['profile'], session: true })
+)
+
+router.get('/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: 'http://localhost:3000/login', session: true }),
+    function (req, res) {
+        const user = req.user
+        const userId = user as verifiedUser
+        // Successful authentication, redirect home.
+        const token = jwt.sign({ SESSION: userId._id }, `${config.TOKEN_SECRET}`)
+        res.redirect(`http://localhost:3000/socmed/session/${token}`)
+    }
+)
+
+export default router

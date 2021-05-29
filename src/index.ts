@@ -12,8 +12,8 @@ import { IMongoUser } from './index.interfaces'
 import morgan from 'morgan'
 import verify from './verifyToken'
 import secureRoute from './secure.routes'
-import googleRoutes from './passport/strategy/google/google.routes'
-import twitterRoutes from './passport/strategy/twitter/twitter.routes'
+import googleRoutes from './passport/strategy/google/google.strategy'
+import twitterRoutes from './passport/strategy/twitter/twitter.strategy'
 import localRoutes from './passport/strategy/local/local.strategy'
 
 const app = express()
