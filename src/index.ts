@@ -6,8 +6,9 @@ import passport from 'passport'
 import { config } from './config'
 import './database'
 
-import User from './user'
-import { IMongoUser } from './index.interfaces'
+// import User from './user'
+// import { IMongoUser } from './index.interfaces'
+import { serialize, deserialize} from './passport/passport'
 
 import morgan from 'morgan'
 import verify from './verifyToken'
@@ -41,20 +42,10 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 //Taking user data from authentication and store it in session cookie
-passport.serializeUser((user: IMongoUser, done: any) => {
-    return done(null, user._id)
-})
+passport.serializeUser(serialize)
 
 //Take user data and attaching it to req.user
-passport.deserializeUser((id: string, done: any) => {
-    User.findById(id, (err: Error, user: IMongoUser) => {
-        const userData = {
-            username: user.username,
-            id: user._id
-        }
-        return done(null, userData)
-    })
-})
+passport.deserializeUser(deserialize)
 
 app.use(googleRoutes)
 app.use(twitterRoutes)
