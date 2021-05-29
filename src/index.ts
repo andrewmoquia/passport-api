@@ -196,10 +196,8 @@ app.get('/getUser', verify, async (req, res) => {
 })
 
 app.get('/auth/logout', (req, res) => {
-    if (req.user) {
-        req.logout()
-        res.send("Successfully logout!")
-    }
+    req.logout()
+    res.send("Successfully logout!")
 })
 
 app.use('/user', verify, secureRoute)
