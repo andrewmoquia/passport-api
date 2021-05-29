@@ -146,7 +146,7 @@ app.post('/login', function (req, res, next) {
             if (err) return next(err)
             //Create and assign token
             const token = jwt.sign({ user: user._id }, `${config.TOKEN_SECRET}`)
-            res.header('auth-token', token).send(token)
+            res.header('auth_token', token).send(token)
         })
     })(req, res, next)
 })
