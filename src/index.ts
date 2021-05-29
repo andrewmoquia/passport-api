@@ -1,5 +1,7 @@
 import cors from 'cors'
 import morgan from 'morgan'
+import helmet from 'helmet'
+import redis from 'redis'
 import express from 'express'
 import passport from 'passport'
 
@@ -13,11 +15,23 @@ import googleRoutes from './passport/strategy/google/google.strategy'
 import twitterRoutes from './passport/strategy/twitter/twitter.strategy'
 import localRoutes from './passport/strategy/local/local.strategy'
 
+
+
 const app = express()
+const redisClient = redis.createClient()
+const limiter = require('express-limiter')(app, redisClient)
+
+// Limit requests to 100 per hour per ip address
+limiter({
+    lookup: ['connection.remoteAddress'],
+    total: 100,
+    expire: 1000 * 60 * 60
+})
 
 //Middleware
 
 //Console verb action in HTTP
+app.use(helmet())
 app.use(morgan('dev'))
 app.use(express.json())
 
