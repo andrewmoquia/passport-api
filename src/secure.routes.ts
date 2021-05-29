@@ -6,7 +6,7 @@ import User from './user'
 const getProfile: RequestHandler = async (req, res, next) => {
     try {
         console.log(req.user)
-        const userFound = await User.findById({_id: req.user.SESSION})
+        res.send(req.user)
     } catch (error) {
         console.log(error)
     }
