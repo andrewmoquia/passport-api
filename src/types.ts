@@ -18,3 +18,8 @@ export interface verifiedUser {
     _id: string,
     iat: string
 }
+
+export interface IUserSession {
+    SESSION:any,
+    iat: number
+}

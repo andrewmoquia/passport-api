@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
-import {RequestHandler} from 'express'
+import { RequestHandler } from 'express'
 import User from './user'
+import { IUserSession } from './types'
 
 const getProfile: RequestHandler = async (req, res, next) => {
     try {
-        console.log(req.user)
+        const user = req.user as IUserSession
+        console.log(user.SESSION)
         res.send(req.user)
     } catch (error) {
         console.log(error)
