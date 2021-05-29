@@ -20,10 +20,7 @@ const app = express()
 //Site that allow to verb action in API
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
-const redisClient = redis.createClient({
-    port: 4000,
-    host: 'http://localhost:3000'
-})
+const redisClient = redis.createClient()
 redisClient.on('connect', ()=>{
     console.log('connected')
 })
@@ -31,7 +28,7 @@ const limiter = require('express-limiter')(app, redisClient)
 
 //Limit requests to 100 per hour per ip address
 limiter({
-    lookup: ['connection.remoteAddress'],
+    lookup: ['socket.remoteAddress'],
     total: 100,
     expire: 1000 * 60 * 60
 })
@@ -45,6 +42,7 @@ app.use(express.json())
 
 //ALlow test in localhost:4000
 app.set("trust proxy", 1)
+app.set("trust proxy", true)
 
 //Create cookie when interacting with API
 app.use(createSession)
