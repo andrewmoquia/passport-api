@@ -1,16 +1,12 @@
-import express from 'express'
 import cors from 'cors'
-import session from 'express-session'
+import morgan from 'morgan'
+import express from 'express'
 import passport from 'passport'
 
 import { config } from './config'
-import './database'
-
-// import User from './user'
-// import { IMongoUser } from './index.interfaces'
 import { serialize, deserialize, createSession} from './passport/passport.controller'
 
-import morgan from 'morgan'
+import './database'
 import verify from './verifyToken'
 import secureRoute from './secure.routes'
 import googleRoutes from './passport/strategy/google/google.strategy'
@@ -25,6 +21,7 @@ app.use(express.json())
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
 app.set("trust proxy", 1)
+
 app.use(createSession)
 
 app.use(passport.initialize())
