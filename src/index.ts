@@ -1,9 +1,9 @@
 import cors from 'cors'
 import morgan from 'morgan'
 import helmet from 'helmet'
-import redis from 'redis'
 import express from 'express'
 import passport from 'passport'
+import rateLimit from 'express-rate-limit'
 
 import { config } from './config'
 import { serialize, deserialize, createSession} from './passport/passport.controller'
@@ -16,25 +16,21 @@ import twitterRoutes from './passport/strategy/twitter/twitter.strategy'
 import localRoutes from './passport/strategy/local/local.strategy'
 
 const app = express()
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100 // limit each IP to 100 requests per windowMs
+});
 
 //ALlow test in localhost:4000
 app.set("trust proxy", 1)
 
-//Site that allow to verb action in API
+//Site that allow to make request in API
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
-
-const redisClient = redis.createClient()
-const limiter = require('express-limiter')(app, redisClient)
-
-//Limit requests to 100 per hour per ip address
-limiter({
-    lookup: ['connection.remoteAddress'],
-    total: 100,
-    expire: 1000 * 60 * 60
-})
 
 //Add 11 layer of security
 app.use(helmet())
+
+app.use(limiter)
 
 //Console verb action in HTTP
 app.use(morgan('dev'))
