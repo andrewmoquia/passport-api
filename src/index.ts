@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import session from 'express-session'
+// import session from 'express-session'
 import passport from 'passport'
 import passportGoogle from 'passport-google-oauth20'
 import passportTwitter from 'passport-twitter'
@@ -13,7 +13,11 @@ import { IMongoUser, verifiedUser } from './types'
 import morgan from 'morgan'
 import jwt from 'jsonwebtoken'
 import verify from './verifyToken'
+import JWTPassport from 'passport-jwt'
+import secureRoute from './secure.routes'
 
+const ExtractJWT = JWTPassport.ExtractJwt
+const JWTStrategy = JWTPassport.Strategy    
 const TwitterStrategy = passportTwitter.Strategy
 const GoogleStrategy = passportGoogle.Strategy
 const LocalStrategy = passportLocal.Strategy
@@ -25,36 +29,51 @@ app.use(express.json())
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
 app.set("trust proxy", 1)
-app.use(
-    session({
-        secret: 'secretcode',
-        resave: true,
-        saveUninitialized: false,
-        cookie: {
-            sameSite: 'none',
-            secure: true,
-            maxAge: 1000 * 60 * 60 * 24 * 7 //One week
-        }
-    })
-)
+// app.use(
+//     session({
+//         secret: 'secretcode',
+//         resave: true,
+//         saveUninitialized: false,
+//         cookie: {
+//             sameSite: 'none',
+//             secure: true,
+//             maxAge: 1000 * 60 * 60 * 24 * 7 //One week
+//         }
+//     })
+// )
+
 app.use(passport.initialize())
-app.use(passport.session())
+
+passport.use(new JWTStrategy ({
+    secretOrKey: `${config.TOKEN_SECRET}`,
+    jwtFromRequest: ExtractJWT.fromUrlQueryParameter('auth_token')
+}, async(token, done) => {
+        try {
+            return done(null, token._id);
+        } catch (error) {
+            done(error);
+        }
+    }
+))
+
+
+// app.use(passport.session())
 
 //Taking user data from authentication and store it in session cookie
-passport.serializeUser((user: IMongoUser, done: any) => {
-    return done(null, user._id)
-})
+// passport.serializeUser((user: IMongoUser, done: any) => {
+//     return done(null, user._id)
+// })   
 
-//Take user data and attaching it to req.user
-passport.deserializeUser((id: string, done: any) => {
-    User.findById(id, (err: Error, user: IMongoUser) => {
-        const userData = {
-            username: user.username,
-            id: user._id
-        }
-        return done(null, userData)
-    })
-})
+// //Take user data and attaching it to req.user
+// passport.deserializeUser((id: string, done: any) => {
+//     User.findById(id, (err: Error, user: IMongoUser) => {
+//         const userData = {
+//             username: user.username,
+//             id: user._id
+//         }
+//         return done(null, userData)
+//     })
+// })
 
 //Local Passport
 passport.use(new LocalStrategy((username: string, password: string, done) => {
@@ -168,9 +187,9 @@ app.get('/auth/google/callback',
 
 app.get('/auth/twitter', passport.authenticate('twitter'))
 
-app.get('/getUser/socmedway', (req, res) => {
-    res.send(req.user)
-})
+// app.get('/getUser/socmedway', (req, res) => {
+//     res.send(req.user)
+// })
 
 app.get('/auth/twitter/callback',
     passport.authenticate('twitter', { failureRedirect: 'http://localhost:3000/login' }),
@@ -194,5 +213,7 @@ app.get('/auth/logout', (req, res) => {
         res.send("Successfully logout!")
     }
 })
+
+app.use('/user', passport.authenticate('jwt', { session: false }), secureRoute)
 
 app.listen(config.PORT || 4000, () => { console.log('Server is up!') })
