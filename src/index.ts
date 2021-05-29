@@ -56,7 +56,6 @@ passport.use(new JWTStrategy ({
     }
 ))
 
-
 // app.use(passport.session())
 
 //Taking user data from authentication and store it in session cookie
