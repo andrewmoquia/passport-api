@@ -1,7 +1,7 @@
 import cors from 'cors'
 import morgan from 'morgan'
 import helmet from 'helmet'
-// import redis from 'redis'
+import redis from 'redis'
 import express from 'express'
 import passport from 'passport'
 
@@ -20,15 +20,15 @@ const app = express()
 //Site that allow to verb action in API
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
-// const redisClient = redis.createClient()
-// const limiter = require('express-limiter')(app, redisClient)
+const redisClient = redis.createClient()
+const limiter = require('express-limiter')(app, redisClient)
 
-// Limit requests to 100 per hour per ip address
-// limiter({
-//     lookup: ['connection.remoteAddress'],
-//     total: 100,
-//     expire: 1000 * 60 * 60
-// })
+//Limit requests to 100 per hour per ip address
+limiter({
+    lookup: ['connection.remoteAddress'],
+    total: 100,
+    expire: 1000 * 60 * 60
+})
 
 //Add 11 layer of security
 app.use(helmet())
