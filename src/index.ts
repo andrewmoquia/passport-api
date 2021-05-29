@@ -162,10 +162,13 @@ app.get('/auth/google',
 );
 
 app.get('/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: 'http://localhost:3000/login' }),
+    passport.authenticate('google', { failureRedirect: 'http://localhost:3000/login', session: false }),
     function (req, res) {
+        const user = req.user
+        const userId = user as verifiedUser
         // Successful authentication, redirect home.
-        res.redirect('http://localhost:3000');
+        const token = jwt.sign({ SESSION: userId._id }, `${config.TOKEN_SECRET}`)
+        res.header('auth_token', token).send(token).redirect('http://localhost:3000')
     }
 )
 
