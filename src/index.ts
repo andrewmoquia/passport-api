@@ -15,11 +15,12 @@ import googleRoutes from './passport/strategy/google/google.strategy'
 import twitterRoutes from './passport/strategy/twitter/twitter.strategy'
 import localRoutes from './passport/strategy/local/local.strategy'
 
-
-
 const app = express()
 const redisClient = redis.createClient()
 const limiter = require('express-limiter')(app, redisClient)
+
+//Site that allow to verb action in API
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
 // Limit requests to 100 per hour per ip address
 limiter({
@@ -28,15 +29,12 @@ limiter({
     expire: 1000 * 60 * 60
 })
 
-//Middleware
+//Add 11 layer of security
+app.use(helmet())
 
 //Console verb action in HTTP
-app.use(helmet())
 app.use(morgan('dev'))
 app.use(express.json())
-
-//Site that allow to verb action in API
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
 //ALlow test in localhost:4000
 app.set("trust proxy", 1)
