@@ -14,7 +14,7 @@ import verify from './verifyToken'
 import secureRoute from './secure.routes'
 import googleRoutes from './passport/strategy/google/google.routes'
 import twitterRoutes from './passport/strategy/twitter/twitter.routes'
-import localRoutes from './passport/strategy/local/local.routes'
+import localRoutes from './passport/strategy/local/local.strategy'
 
 const app = express()
 
