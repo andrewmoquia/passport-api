@@ -10,7 +10,7 @@
             "es6",
             "dom"
         ],
-        "sourceMap": true,
+        "sourceMap": false,
         "skipLibCheck": true,
         "allowJs": true,
         "jsx": "react",
