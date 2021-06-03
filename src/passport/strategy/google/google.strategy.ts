@@ -39,13 +39,13 @@ router.get('/auth/google',
 )
 
 router.get('/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: 'https://passportclient.netlify.app', session: true }),
+    passport.authenticate('google', { failureRedirect: 'http://localhost:3000', session: true }),
     function (req, res) {
         const user = req.user
         const userId = user as verifiedUser
         // Successful authentication, redirect home.
         const token = jwt.sign({ SESSION: userId._id }, `${config.TOKEN_SECRET}`)
-        res.redirect(`https://passportclient.netlify.app/auth/${token}`)
+        res.redirect(`http://localhost:3000/auth/${token}`)
     }
 )
 

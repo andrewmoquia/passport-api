@@ -27,7 +27,7 @@ const limiter = rateLimit({
 app.set("trust proxy", 1)
 
 //Site that allow to make request in API
-app.use(cors({ origin: 'https://passportclient.netlify.app', credentials: true }))
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
 //Add 11 layer of security
 app.use(helmet())
