@@ -37,13 +37,13 @@ passport.use(new TwitterStrategy({
 router.get('/auth/twitter', passport.authenticate('twitter', { session: true }))
 
 router.get('/auth/twitter/callback',
-    passport.authenticate('twitter', { failureRedirect: 'http://localhost:3000/login', session: true }),
+    passport.authenticate('twitter', { failureRedirect: 'https://passportclient.netlify.app', session: true }),
     function (req, res) {
         const user = req.user
         const userId = user as verifiedUser
         // Successful authentication, redirect home.
         const token = jwt.sign({ SESSION: userId._id }, `${config.TOKEN_SECRET}`)
-        res.redirect(`http://localhost:3000/socmed/session/${token}`)
+        res.redirect(`https://passportclient.netlify.app/auth/${token}`)
     }
 )
 
