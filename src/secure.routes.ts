@@ -1,15 +1,9 @@
 import express from 'express'
 import { RequestHandler } from 'express'
 import User from './user'
-import cors from 'cors'
 import { IUserSession } from './index.interfaces'
 
 const router = express.Router();
-const corsOptions = {
-    methods: "OPTIONS",
-    exposedHeaders: "false"
-}
-
 
 const getProfile: RequestHandler = async (req, res, next) => {
     try {
@@ -22,6 +16,6 @@ const getProfile: RequestHandler = async (req, res, next) => {
     }
 }
 
-router.get('/profile', cors(corsOptions), getProfile);
+router.get('/profile', getProfile);
 
 export default router;
