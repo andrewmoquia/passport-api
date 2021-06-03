@@ -6,9 +6,8 @@ import { IUserSession } from './index.interfaces'
 
 const router = express.Router();
 const corsOptions = {
-    methods: "GET",
+    methods: "OPTIONS",
     exposedHeaders: "false"
-
 }
 
 
