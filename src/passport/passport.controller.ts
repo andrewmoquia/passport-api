@@ -8,6 +8,7 @@ export const serialize = (user: IMongoUser, done: any) => {
 
 export const deserialize = (id: string, done: any) => {
     User.findById(id, (err: Error, user: IMongoUser) => {
+        if(err) throw err
         const userData = {
             username: user.username,
             id: user._id
