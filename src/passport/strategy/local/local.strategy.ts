@@ -30,14 +30,14 @@ passport.use(new LocalStrategy((username: string, password: string, done) => {
 //Routes
 router.post('/login', function (req, res, next) {
     passport.authenticate('local', function (err, user, info) {
-        if (err) return next(res.send(info.message))
-        if (info) return res.send(info.message)
+        if (err) return next(res.send(info))
+        if (info) return res.send(info)
         if (!user) return res.send("Something went wrong!")
         req.logIn(user, { session: false }, async (err) => {
             if (err) return next(res.send(err))
             //Create and assign token
-            const token = jwt.sign({ SESSION: user._id }, `${config.TOKEN_SECRET}`)
-            res.header('auth_token', token).send(token)
+            const createdToken = jwt.sign({ SESSION: user._id }, `${config.TOKEN_SECRET}`)
+            res.header('auth_token', createdToken).send({token: createdToken})
         })
     })(req, res, next)
 })
