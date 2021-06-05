@@ -35,9 +35,10 @@ router.post('/login',  (req, res, next) => {
         if (!user) return res.send({message: "Something went wrong!"})
         if(user.accountType === req.body.accountType) {
             req.logIn(user, { session: false }, async (err) => {
+                console.log(user)
             if (err) return next(err)
             //Create and assign token
-            const createdToken = jwt.sign({ SESSION: user._id }, `${config.TOKEN_SECRET}`)
+            const createdToken = jwt.sign({ id: user._id }, `${config.TOKEN_SECRET}`)
             res.header('auth_token', createdToken).send({token: createdToken})
              })
         } else {
@@ -48,19 +49,20 @@ router.post('/login',  (req, res, next) => {
 })
 
 router.post('/register', async (req, res) => {
-    const { username, password } = req?.body;
+    const { username, password, accountType } = req?.body;
     if (!username || !password || typeof username !== "string" || typeof password !== "string") {
-        res.send("Improper Values");
+        res.send("Improper values!");
         return;
     }
-    User.findOne({ username }, async (err: Error, doc: IMongoUser) => {
+    User.findOne({ username }, async (err: Error, user: IMongoUser) => {
         if (err) throw err;
-        if (doc) res.send("User already exists!");
-        if (!doc) {
+        if (user) res.send("User already exists!");
+        if (!user) {
             const hashedPassword = await bcrypt.hash(password, 10);
             const newUser = new User({
                 username,
                 password: hashedPassword,
+                accountType
             });
             await newUser.save();
             res.send("Success account creation!")

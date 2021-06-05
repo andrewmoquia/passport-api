@@ -20,6 +20,6 @@ export interface verifiedUser {
 }
 
 export interface IUserSession {
-    SESSION:any,
+    id:any,
     iat: number
 }
