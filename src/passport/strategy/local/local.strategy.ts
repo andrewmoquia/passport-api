@@ -33,7 +33,7 @@ router.post('/login',  (req, res, next) => {
         if (err) return next(err)
         if (info) return res.send(info)
         if (!user) return res.send({message: "Something went wrong!"})
-        if(user.accoutType === req.body.accountType) {
+        if(user.accountType === req.body.accountType) {
             req.logIn(user, { session: false }, async (err) => {
             if (err) return next(err)
             //Create and assign token
