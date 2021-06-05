@@ -16,12 +16,12 @@ const router = Router()
 //Local Passport
 passport.use(new LocalStrategy((username: string, password: string, done) => {
     User.findOne({ username: username }, (err: Error, user: IMongoUser) => {
-        if (err) throw err
-        if (!user) return done(null, false, { message: "No user with that username!" })
+        if (err) return done(null, false, { message: 'Something went wrong!'})
+        if (!user) return done(null, false, { message: "Invalid username or password!" })
         bcrypt.compare(password, user.password, (err, result: boolean) => {
             if (err) throw err
             if (result === true) { return done(null, user) }
-            else { return done(null, false, { message: "Incorrect password!" }) }
+            else { return done(null, false, { message: "Invalid username or password!" }) }
         })
     })
 })
@@ -30,11 +30,11 @@ passport.use(new LocalStrategy((username: string, password: string, done) => {
 //Routes
 router.post('/login', function (req, res, next) {
     passport.authenticate('local', function (err, user, info) {
-        if (err) return next(err)
-        if (info) return res.send(info)
+        if (err) return next(res.send(info.message))
+        if (info) return res.send(info.message)
         if (!user) return res.send("Something went wrong!")
         req.logIn(user, { session: false }, async (err) => {
-            if (err) return next(err)
+            if (err) return next(res.send(err))
             //Create and assign token
             const token = jwt.sign({ SESSION: user._id }, `${config.TOKEN_SECRET}`)
             res.header('auth_token', token).send(token)
