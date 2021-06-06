@@ -35,7 +35,6 @@ router.post('/login',  (req, res, next) => {
         if (!user) return res.send({message: "Something went wrong!"})
         if(user.accountType === req.body.accountType) {
             req.logIn(user, { session: false }, async (err) => {
-                console.log(user)
             if (err) return next(err)
             //Create and assign token
             const createdToken = jwt.sign({ id: user._id }, `${config.TOKEN_SECRET}`)
