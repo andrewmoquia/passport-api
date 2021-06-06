@@ -11,6 +11,7 @@ export interface IMongoUser {
     twitterId?: string,
     username: string,
     password: string,
+    accountType: string,
     _v: number
 }
 
