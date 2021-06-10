@@ -70,8 +70,13 @@ router.post('/register', async (req, res) => {
 })
 
 router.get('/auth/logout', (req, res) => {
-    req.logout()
-    res.send("Successfully logout!")
+    try {
+        req.logout()
+        res.send("Successfully logout!")
+    } catch (error) {
+        res.send("Something went wrong!")
+        throw error
+    }    
 })
 
 export default router
